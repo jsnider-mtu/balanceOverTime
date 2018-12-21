@@ -98,7 +98,7 @@ do
   if [ $COUNTERW -eq $PAYDAY ]
   then
     BALANCE=`echo "$BALANCE + $PAY" | bc`
-    echo -e "Day: $COUNTER\nBalance: \033[32m$BALANCE\033[0m\n"
+    echo -e "Day: $COUNTER\nDifference: \033[32m+$PAY\033[0m\nBalance: \033[32m$BALANCE\033[0m\n"
   fi
   for x in ${EXPENSES[@]}
   do
@@ -107,7 +107,7 @@ do
     if [ $COUNTER -eq $EDOM ]
     then
       BALANCE=`echo "$BALANCE - $ECOST" | bc`
-      echo -e "Day: $COUNTER\nBalance: \033[31m$BALANCE\033[0m\n"
+      echo -e "Day: $COUNTER\nDifference: \033[31m-$ECOST\033[0m\nBalance: \033[31m$BALANCE\033[0m\n"
     fi
   done
 done
@@ -125,7 +125,7 @@ do
   if [ $COUNTERW -eq $PAYDAY ]
   then
     BALANCE=`echo "$BALANCE + $PAY" | bc`
-    echo -e "Day: $COUNTER\nBalance: \033[32m$BALANCE\033[0m\n"
+    echo -e "Day: $COUNTER\nDifference: \033[32m+$PAY\033[0m\nBalance: \033[32m$BALANCE\033[0m\n"
   fi
   for x in ${EXPENSES[@]}
   do
@@ -134,7 +134,7 @@ do
     if [ $COUNTER -eq $EDOM ]
     then
       BALANCE=`echo "$BALANCE - $ECOST" | bc`
-      echo -e "Day: $COUNTER\nBalance: \033[31m$BALANCE\033[0m\n"
+      echo -e "Day: $COUNTER\nDifference: \033[31m-$ECOST\033[0m\nBalance: \033[31m$BALANCE\033[0m\n"
     fi
   done
 done
