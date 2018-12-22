@@ -4,10 +4,29 @@
 # Balance Over Time
 ###
 #
-# Grab current date, current account balance, payday (start with weekly, expand later),
-# expense days (day of month/amount), and normal pay amount
+# TODO:
+# - If an expense day is on a non-existant day (i.e. day 29 of February) then it
+#   should be applied on the last day of the month instead.
 #
-# Prompt for all of the above (minus date) due to this being a container image
+
+# https://stackoverflow.com/a/29754866
+! getopt --test > /dev/null
+if [[ ${PIPESTATUS[0]} -ne 4 ]]
+then
+	echo "getopt --test failed in this environment"
+  exit 1
+fi
+
+OPTIONS=c:d:e:f:p:
+LONGOPTS=current-balance:,payday:,expenses:,following-month-end-day:,pay:
+
+! PARSED=`getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@"`
+if [[ ${PIPESTATUS[0]} -ne 0 ]]
+then
+  exit 2
+fi
+
+eval set -- "$PARSED"
 
 case `date +%m` in
 01|03|05|07|08|10|12)
@@ -21,35 +40,73 @@ case `date +%m` in
   ;;
 esac
 
+BALANCE=
+DIFM=7
 DOM=`date +%d`
 DOW=`date +%w`
+EXPENSES=()
+PAY=
+PAYDAY=
 
-echo -e "\033[32mWhat day of the week do you get paid? (0..6); 0 is Sunday\033[0m"
-read -e -p 'Payday> ' PAYDAY CRUFT
+while true
+do
+	case "$1" in
+		-c|--current-balance)
+			BALANCE="$2"
+			shift 2
+			;;
+		-d|--payday)
+			PAYDAY="$2"
+			shift 2
+			;;
+		-e|--expenses)
+			EXPENSES="$2"
+			shift 2
+			;;
+		-f|--following-month-end-day)
+			DIFM="$2"
+			shift 2
+			;;
+		-p|--pay)
+			PAY="$2"
+			shift 2
+			;;
+		--)
+			shift
+			break
+			;;
+		*)
+			echo "Programming error"
+			exit 3
+			;;
+	esac
+done
+
 while [[ ! $PAYDAY =~ ^[0-6]$ ]]
 do
+  echo -e "\033[32mWhat day of the week do you get paid? (0..6); 0 is Sunday\033[0m"
   read -e -p 'Payday> ' PAYDAY CRUFT
 done
 
-echo -e "\n\033[32mHow much do you get paid a week? (xxxx.xx)\033[0m"
-read -e -p 'Pay> ' PAY CRUFT
 while [[ ! $PAY =~ ^[0-9]{3,4}\.[0-9]{2}$ ]]
 do
+  echo -e "\n\033[32mHow much do you get paid a week? (xxxx.xx)\033[0m"
   read -e -p 'Pay> ' PAY CRUFT
 done
 
-echo -e "\n\033[32mCurrent account balance? (x.xx .. xxxx.xx)\033[0m"
-read -e -p 'Current Balance> ' BALANCE CRUFT
 while [[ ! $BALANCE =~ ^[0-9]{1,}\.[0-9]{2}$ ]]
 do
+  echo -e "\n\033[32mCurrent account balance? (x.xx .. xxxx.xx)\033[0m"
   read -e -p 'Current Balance> ' BALANCE CRUFT
 done
 
-echo -e "\n\033[32mExpenses? (dd,x.xx dd,x.xx ..)\033[0m"
 while true
 do
   TAINTED=1
-  read -e -p 'Expenses> ' -a EXPENSES
+	if [[ ${#EXPENSES} -eq 0 ]]
+	then
+		TAINTED=0
+	fi
   for i in ${EXPENSES[@]}
   do
     if [[ ! $i =~ , ]]
@@ -77,6 +134,8 @@ do
   done
   if [[ $TAINTED = 0 ]]
   then
+    echo -e "\n\033[32mExpenses? (dd,x.xx dd,x.xx ..)\033[0m"
+    read -e -p 'Expenses> ' -a EXPENSES
     continue
   else
     break
@@ -113,7 +172,7 @@ do
 done
 
 COUNTER=0
-while [ $COUNTER -lt 7 ]
+while [ $COUNTER -lt $DIFM ]
 do
   let COUNTER++
   if [ $COUNTERW -lt 6 ]
