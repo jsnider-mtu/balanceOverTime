@@ -3,6 +3,9 @@
 ###
 # Balance Over Time
 ###
+#
+# TODO:
+#
 
 # https://stackoverflow.com/a/29754866
 ! getopt --test > /dev/null
@@ -23,6 +26,11 @@ fi
 
 eval set -- "$PARSED"
 
+# https://stackpointer.io/script/shell-script-check-leap-year/509/
+YEAR=`date +%Y`
+LYEAR=0
+[ $(($YEAR % 4)) -eq 0 ] && ([ $(($YEAR % 100)) -ne 0 ] || [ $(($YEAR % 400)) -eq 0 ]) && LYEAR=1
+
 case `date +%m` in
 01|03|05|07|08|10|12)
   DICM=31
@@ -34,6 +42,10 @@ case `date +%m` in
   DICM=30
   ;;
 esac
+if [[ $LYEAR -eq 1 && $DICM -eq 28 ]]
+then
+  let DICM++
+fi
 
 case $(($(date +%m)+1)) in
 03|05|07|08|10|12|13)
@@ -46,6 +58,10 @@ case $(($(date +%m)+1)) in
   DIFM=30
   ;;
 esac
+if [[ $LYEAR -eq 1 && $DIFM -eq 28 ]]
+then
+  let DIFM++
+fi
 
 BALANCE=
 FMED=7
