@@ -13,7 +13,7 @@
 ! getopt --test > /dev/null
 if [[ ${PIPESTATUS[0]} -ne 4 ]]
 then
-	echo "getopt --test failed in this environment"
+  echo "getopt --test failed in this environment"
   exit 1
 fi
 
@@ -50,36 +50,36 @@ PAYDAY=
 
 while true
 do
-	case "$1" in
-		-c|--current-balance)
-			BALANCE="$2"
-			shift 2
-			;;
-		-d|--payday)
-			PAYDAY="$2"
-			shift 2
-			;;
-		-e|--expenses)
-			EXPENSES="$2"
-			shift 2
-			;;
-		-f|--following-month-end-day)
-			DIFM="$2"
-			shift 2
-			;;
-		-p|--pay)
-			PAY="$2"
-			shift 2
-			;;
-		--)
-			shift
-			break
-			;;
-		*)
-			echo "Programming error"
-			exit 3
-			;;
-	esac
+  case "$1" in
+    -c|--current-balance)
+      BALANCE="$2"
+      shift 2
+      ;;
+    -d|--payday)
+      PAYDAY="$2"
+      shift 2
+      ;;
+    -e|--expenses)
+      EXPENSES="$2"
+      shift 2
+      ;;
+    -f|--following-month-end-day)
+      DIFM="$2"
+      shift 2
+      ;;
+    -p|--pay)
+      PAY="$2"
+      shift 2
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      echo "Programming error"
+      exit 3
+      ;;
+  esac
 done
 
 while [[ ! $PAYDAY =~ ^[0-6]$ ]]
@@ -103,10 +103,10 @@ done
 while true
 do
   TAINTED=1
-	if [[ ${#EXPENSES} -eq 0 ]]
-	then
-		TAINTED=0
-	fi
+  if [[ ${#EXPENSES} -eq 0 ]]
+  then
+    TAINTED=0
+  fi
   for i in ${EXPENSES[@]}
   do
     if [[ ! $i =~ , ]]
