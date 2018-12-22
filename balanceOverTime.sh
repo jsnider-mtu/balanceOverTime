@@ -3,11 +3,6 @@
 ###
 # Balance Over Time
 ###
-#
-# TODO:
-# - If an expense day is on a non-existant day (i.e. day 29 of February) then it
-#   should be applied on the last day of the month instead.
-#
 
 # https://stackoverflow.com/a/29754866
 ! getopt --test > /dev/null
@@ -40,8 +35,20 @@ case `date +%m` in
   ;;
 esac
 
+case $(($(date +%m)+1)) in
+03|05|07|08|10|12|13)
+  DIFM=31
+  ;;
+02)
+  DIFM=28
+  ;;
+*)
+  DIFM=30
+  ;;
+esac
+
 BALANCE=
-DIFM=7
+FMED=7
 DOM=`date +%d`
 DOW=`date +%w`
 EXPENSES=()
@@ -64,7 +71,7 @@ do
       shift 2
       ;;
     -f|--following-month-end-day)
-      DIFM="$2"
+      FMED="$2"
       shift 2
       ;;
     -p|--pay)
@@ -163,7 +170,7 @@ do
   do
     EDOM=`echo $x | cut -d',' -f1`
     ECOST=`echo $x | cut -d',' -f2`
-    if [ $COUNTER -eq $EDOM ]
+    if [[ ($COUNTER -eq $EDOM) || ($COUNTER -eq $DICM && $EDOM -gt $DICM) ]]
     then
       BALANCE=`echo "$BALANCE - $ECOST" | bc`
       echo -e "Day: $COUNTER\nDifference: \033[31m-$ECOST\033[0m\nBalance: \033[31m$BALANCE\033[0m\n"
@@ -172,7 +179,7 @@ do
 done
 
 COUNTER=0
-while [ $COUNTER -lt $DIFM ]
+while [ $COUNTER -lt $FMED ]
 do
   let COUNTER++
   if [ $COUNTERW -lt 6 ]
@@ -190,7 +197,7 @@ do
   do
     EDOM=`echo $x | cut -d',' -f1`
     ECOST=`echo $x | cut -d',' -f2`
-    if [ $COUNTER -eq $EDOM ]
+    if [[ ($COUNTER -eq $EDOM) || ($COUNTER -eq $DIFM && $EDOM -gt $DIFM) ]]
     then
       BALANCE=`echo "$BALANCE - $ECOST" | bc`
       echo -e "Day: $COUNTER\nDifference: \033[31m-$ECOST\033[0m\nBalance: \033[31m$BALANCE\033[0m\n"
