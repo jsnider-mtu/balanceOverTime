@@ -48,10 +48,10 @@ then
 fi
 
 case $(($(date +%m)+1)) in
-03|05|07|08|10|12|13)
+3|5|7|8|10|12|13)
   DIFM=31
   ;;
-02)
+2)
   DIFM=28
   ;;
 *)
@@ -193,6 +193,11 @@ do
     fi
   done
 done
+
+if [ $FMED -gt $DIFM ]
+then
+  FMED=$DIFM
+fi
 
 COUNTER=0
 while [ $COUNTER -lt $FMED ]
