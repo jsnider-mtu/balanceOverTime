@@ -65,7 +65,7 @@ fi
 
 BALANCE=
 FMED=7
-DOM=`date +%d`
+DOM=$((10#$(date +%d)))
 DOW=`date +%w`
 EXPENSES=()
 PAY=
@@ -144,7 +144,7 @@ do
       TAINTED=0
       break
     fi
-    if [[ ! $EDOM -le 31 ]]
+    if [ ! $EDOM -le 31 ]
     then
       TAINTED=0
       break
@@ -184,7 +184,7 @@ do
   fi
   for x in ${EXPENSES[@]}
   do
-    EDOM=`echo $x | cut -d',' -f1`
+    EDOM=$((10#$(echo $x | cut -d',' -f1)))
     ECOST=`echo $x | cut -d',' -f2`
     if [[ ($COUNTER -eq $EDOM) || ($COUNTER -eq $DICM && $EDOM -gt $DICM) ]]
     then
@@ -216,7 +216,7 @@ do
   fi
   for x in ${EXPENSES[@]}
   do
-    EDOM=`echo $x | cut -d',' -f1`
+    EDOM=$((10#$(echo $x | cut -d',' -f1)))
     ECOST=`echo $x | cut -d',' -f2`
     if [[ ($COUNTER -eq $EDOM) || ($COUNTER -eq $DIFM && $EDOM -gt $DIFM) ]]
     then
