@@ -29,11 +29,9 @@ func main() {
     var ref time.Time
     tn := time.Now()
     tn, err = time.Parse("2006-01-02", tn.Format("2006-01-02"))
-    check(err)
     if diff := tn.Sub(t); diff.Hours() >= 336 {
         mod := int(diff.Hours()) % 336
-        dmod, err := time.ParseDuration(strconv.Itoa(mod) + "h")
-        check(err)
+        dmod, _ := time.ParseDuration(strconv.Itoa(mod) + "h")
         ref = tn.Add(-dmod)
     } else {
         ref = t
