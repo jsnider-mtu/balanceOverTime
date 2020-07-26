@@ -1,2 +1,2 @@
 # balanceOverTime
-Script to calculate checking account balance over time
+Go app to calculate checking account balance over time
