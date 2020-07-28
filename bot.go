@@ -5,6 +5,7 @@ import (
     "fmt"
     "io/ioutil"
     "encoding/json"
+    "os"
     "strconv"
     "time"
 )
@@ -46,7 +47,7 @@ func main() {
     pda := [5]time.Time{ref.Add(pd1), ref.Add(pd2), ref.Add(pd3), ref.Add(pd4), ref.Add(pd5)}
 
     // Read expenses.json and unmarshal data
-    dat, err := ioutil.ReadFile("./expenses.json")
+    dat, err := ioutil.ReadFile(os.Getenv("HOME") + "/.local/etc/bot/expenses.json")
     check(err)
     var exp map[string]float64
     json.Unmarshal(dat, &exp)
