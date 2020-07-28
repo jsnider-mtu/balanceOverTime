@@ -68,6 +68,7 @@ func main() {
     ft := tn
     sfd := strconv.Itoa(ft.Day())
     dd, err := time.ParseDuration("24h")
+    sm := bf
     var ex bool
     var pde float64
     var val float64
@@ -82,6 +83,9 @@ func main() {
                 // Print subln and new bf
                 fmt.Println(fmt.Sprintf("%.2f", obf) + subln)
                 fmt.Println(fmt.Sprintf("%.2f", bf))
+                if bf < sm {
+                    sm = bf
+                }
                 pde = 0
                 obf = bf
                 bf += *payPtr
@@ -108,4 +112,6 @@ func main() {
             }
         }
     }
+    fmt.Println("")
+    fmt.Println("Discretionary funds: $" + fmt.Sprintf("%.2f", sm))
 }
