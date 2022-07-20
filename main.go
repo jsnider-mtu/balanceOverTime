@@ -26,6 +26,7 @@ func main() {
     datePtr := flag.String("d", "2020-07-10", "Last date paid (YYYY-MM-DD)")
     payPtr := flag.Float64("p", 2732.23, "How much are you paid?")
     twoWeekPtr := flag.Bool("twoWeeks", false, "Do you get paid every two weeks?")
+    mdvipPtr := flag.Bool("mdvip", false, "Do you pay MDVIP every quarter?")
 
     flag.Parse()
 
@@ -310,12 +311,14 @@ func main() {
             }
             // Check if sfd exists in exp
             // if yes, subtract exp[sfd] from bf and add to subln
-            if int(ft.Month()) % 3 == 0 && ft.Day() == 1 && !mdvipadded {
-                exp["1"] += 450.0
-                mdvipadded = true
-            } else if int(ft.Month()) % 3 == 0 && ft.Day() == 2 && mdvipadded {
-                exp["1"] -= 450.0
-                mdvipadded = false
+            if *mdvipPtr {
+                if int(ft.Month()) % 3 == 0 && ft.Day() == 1 && !mdvipadded {
+                    exp["1"] += 450.0
+                    mdvipadded = true
+                } else if int(ft.Month()) % 3 == 0 && ft.Day() == 2 && mdvipadded {
+                    exp["1"] -= 450.0
+                    mdvipadded = false
+                }
             }
             if val, ex = exp[sfd]; ex {
                 bf -= val
