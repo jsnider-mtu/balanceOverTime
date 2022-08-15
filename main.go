@@ -315,7 +315,8 @@ func main() {
                 if int(ft.Month()) % 3 == 0 && ft.Day() == 1 && !mdvipadded {
                     exp["1"] += 450.0
                     mdvipadded = true
-                } else if int(ft.Month()) % 3 == 0 && ft.Day() == 2 && mdvipadded {
+                //} else if int(ft.Month()) % 3 == 0 && ft.Day() == 2 && mdvipadded {
+                } else if mdvipadded {
                     exp["1"] -= 450.0
                     mdvipadded = false
                 }
