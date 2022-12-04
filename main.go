@@ -8,7 +8,6 @@ import (
     "os"
     "regexp"
     "strconv"
-    "strings"
     "time"
 )
 
@@ -43,9 +42,6 @@ func main() {
         check(err)
     
         // Get reference date
-        //var ref time.Time
-        //tn := time.Now()
-        //tn, err = time.Parse("2006-01-02", tn.Format("2006-01-02"))
         if diff := tn.Sub(t); diff.Hours() >= 336 {
             mod := int(diff.Hours()) % 336
             dmod, _ := time.ParseDuration(strconv.Itoa(mod) + "h")
@@ -265,41 +261,39 @@ func main() {
     check(err)
 
     // Ask user if any payment's first occurence should be delayed
-    var ds string // "1" "10" I want to not spend day 1 on day 1, but instead spend it on day 10 (just one time)
-    var dexp map[string]string
-    var ddexp map[string]float64
-    fmt.Println("Delay a payment? (Day of payment followed by new day, e.g. '1 10')")
+    var d0 string
+    var d1 string
+    dexp := make(map[string]string)
+    ddexp := make(map[string]float64)
+    fmt.Println("\nDelay a payment? (Day of payment followed by new day, e.g. '1 10')")
     fmt.Println("Specify one per line and an empty line when done")
     fmt.Println("Current payments by day:")
     for pday, payment := range exp {
         fmt.Println(fmt.Sprintf("%s\t%.2f", pday, payment))
     }
     for {
-        _, err = fmt.Scanln(&ds)
+        _, err = fmt.Scanln(&d0, &d1)
         if err != nil {
             break
         }
         // Validate input
-        //invalid := false
-        valid, err := regexp.MatchString(`^\d+\s\d+$`, ds)
+        valid, err := regexp.MatchString(`^\d+\s\d+$`, d0 + " " + d1)
         check(err)
         var dsd0 int
         var dsd1 int
-        dsa := strings.Split(ds, " ")
         if valid {
-            // if dsa[0] is a key in exp
-            if _, ok := exp[dsa[0]]; !ok {
-                fmt.Println(fmt.Sprintf("%s is not an expense day", dsa[0]))
+            if _, ok := exp[d0]; !ok {
+                fmt.Println(fmt.Sprintf("%s is not an expense day", d0))
                 continue
             }
-            dsd0, err = strconv.Atoi(dsa[0])
+            dsd0, err = strconv.Atoi(d0)
             if err != nil {
-                fmt.Println(fmt.Sprintf("%s is not an int", dsa[0]))
+                fmt.Println(fmt.Sprintf("%s is not an int", d0))
                 continue
             }
-            dsd1, err = strconv.Atoi(dsa[1])
+            dsd1, err = strconv.Atoi(d1)
             if err != nil {
-                fmt.Println(fmt.Sprintf("%s is not an int", dsa[1]))
+                fmt.Println(fmt.Sprintf("%s is not an int", d1))
                 continue
             }
             if dsd0 < 1 || dsd0 > 31 {
@@ -540,19 +534,16 @@ func main() {
                 }
             }
         } else {
-            fmt.Println(fmt.Sprintf("Not valid input: %s", ds))
+            fmt.Println("Not valid input")
             continue
         }
-        // valid line
-        dexp[dsa[0]] = dsa[1]
+        dexp[d0] = d1
     }
     
 
     // Convert account balance to float
     bf, err := strconv.ParseFloat(b, 64)
     check(err)
-
-    fmt.Println("")
 
     // Main loop:
     ft := tn
