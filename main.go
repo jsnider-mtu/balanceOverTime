@@ -264,14 +264,16 @@ func main() {
     // Ask user if any payment's first occurence should be delayed
     var d0 string
     var d1 string
+    var d2 string
     dexp := make(map[string]string)
     ddexp := make(map[string]float64)
-    fmt.Println("\nDelay a payment? (Day of payment followed by new day, e.g. '1 10')")
-    fmt.Println("Specify one per line and an empty line when done")
-    fmt.Println("Current payments by day:")
+    fmt.Println("\nCurrent payments by day:")
     for pday, payment := range exp {
         fmt.Println(fmt.Sprintf("%s\t%.2f", pday, payment))
     }
+    fmt.Println("\nDelay a payment? (Day of payment followed by new day, e.g. '1 10')")
+    fmt.Println("Optionally specify an amount to defer (e.g. '1 10 456.45')")
+    fmt.Println("Specify one per line and an empty line when done")
     for {
         _, err = fmt.Scanln(&d0, &d1)
         if err != nil {
