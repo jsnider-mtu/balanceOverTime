@@ -603,7 +603,7 @@ func main() {
                     bf -= val
                     subln += " - " + fmt.Sprint(val)
                 } else {
-                    ddexp[dexp[sfd]] = val
+                    ddexp[dexp[sfd]] += val
                     delete(dexp, sfd)
                 }
             }
