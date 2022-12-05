@@ -216,15 +216,16 @@ func main() {
                 }
             }
         default:
+            ymod := 0
             if ref.Day() == 30 || ref.Day() == 29 || ref.Day() == 28 {
                 for x := 0; x < 5; x++ {
-                    mon := int((float64(x)/2.0)+float64(ref.Month())) % 12
+                    mon := int((float64(x)/2.0)+float64(ref.Month() + 1)) % 12
                     if mon == 0 {
                         mon = 12
                     } else if mon < int(ref.Month()) {
-                        ref = ref.Add(time.Hour * 24 * 365)
+                        ymod = 1
                     }
-                    tim, err := time.Parse("2006-01-02", fmt.Sprintf("%d-%02d-%d", ref.Year(), mon, ((x%2)*15)+15))
+                    tim, err := time.Parse("2006-01-02", fmt.Sprintf("%d-%02d-%d", ref.Year() + ymod, mon, ((x%2)*15)+15))
                     if err != nil {
                         fmt.Println(err)
                     }
@@ -236,9 +237,9 @@ func main() {
                     if mon == 0 {
                         mon = 12
                     } else if mon < int(ref.Month()) {
-                        ref = ref.Add(time.Hour * 24 * 365)
+                        ymod = 1
                     }
-                    tim, err := time.Parse("2006-01-02", fmt.Sprintf("%d-%02d-%d", ref.Year(), mon, ((x%2)*15)+15))
+                    tim, err := time.Parse("2006-01-02", fmt.Sprintf("%d-%02d-%d", ref.Year() + ymod, mon, ((x%2)*15)+15))
                     if err != nil {
                         fmt.Println(err)
                     }
