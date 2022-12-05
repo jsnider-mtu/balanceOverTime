@@ -324,6 +324,10 @@ func main() {
             fmt.Println(fmt.Sprintf("%d is not an expense day", d0))
             continue
         }
+        if _, ok := dexp[strconv.Itoa(d0)]; ok {
+            fmt.Println(fmt.Sprintf("Day %d is already being deferred\nCtrl+C (or Cmd+C) to exit and start again", d0))
+            continue
+        }
         if d0 < 1 || d0 > 31 {
             fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
             continue
