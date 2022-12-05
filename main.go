@@ -344,6 +344,11 @@ func main() {
             fmt.Println("Amount deferred cannot be negative")
             continue
         }
+        if d2 > exp[strconv.Itoa(d0)] {
+            fmt.Println("Amount deferred cannot exceed the total payment")
+            fmt.Println(fmt.Sprintf("Max for day %d: %.2f", d0, exp[strconv.Itoa(d0)]))
+            continue
+        }
         // ex.
         // Today == 10
         // dsd0 == 3; dsd1 == 20 expense on 3rd of next month moved to 20th of next month
