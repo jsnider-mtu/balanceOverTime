@@ -280,7 +280,7 @@ func main() {
     for _, k := range sortedexp {
         fmt.Println(fmt.Sprintf("%d\t%.2f", k, exp[strconv.Itoa(k)]))
     }
-    fmt.Println("\nDelay a payment? (Day of payment followed by new day, e.g. '1 10')")
+    fmt.Println("\nDelay a payment? (Day of payment followed by new day, e.g. '1 10.00')")
     fmt.Println("Optionally specify an amount to defer (e.g. '1 10 456.45')")
     fmt.Println("\t0 or blank will use the full payment amount")
     fmt.Println("Specify one day to defer per line and an empty line when done")
@@ -581,7 +581,54 @@ func main() {
             vdexp[strconv.Itoa(d0)] = d2
         }
     }
-    
+
+    // Ask user if there are any additional payments (first occurence of day)
+    var e0 int
+    var e1 float64
+    exexp := make(map[string]float64)
+    eoad := false
+    fmt.Println("\nAny additional payments? (Day of payment followed by amount, e.g. '7 600.00')")
+    fmt.Println("Specify one payment per line and an empty line when done")
+    for {
+        e0 = 0
+        e1 = 0.0
+        fmt.Print("> ")
+        _, err = fmt.Scanln(&e0, &e1)
+        if err != nil {
+            switch err.Error() {
+            case "unexpected newline":
+                if e0 == 0 {
+                    eoad = true
+                }
+                if e0 > 0 && e1 == 0.0 {
+                    fmt.Println("Missing amount, try again")
+                    continue
+                }
+            case "expected integer":
+                fmt.Println("First argument is invalid, try again")
+                continue
+            case "expected newline":
+                fmt.Println("Too many arguments but that's ok\nYou'll do better next time")
+            }
+        }
+        if eoad {
+            fmt.Println("")
+            break
+        }
+        if e0 < 1 || e0 > 31 {
+            fmt.Println(fmt.Sprintf("%d is not a valid day", e0))
+            continue
+        }
+        if e1 < 0.0 {
+            fmt.Println("Amount cannot be negative")
+            continue
+        }
+        if _, ok := exexp[strconv.Itoa(e0)]; ok {
+            exexp[strconv.Itoa(e0)] += e1
+            continue
+        }
+        exexp[strconv.Itoa(e0)] = e1
+    }
 
     // Convert account balance to float
     bf, err := strconv.ParseFloat(b, 64)
@@ -658,6 +705,11 @@ func main() {
                 bf -= val
                 subln += " - " + fmt.Sprint(val)
                 delete(ddexp, sfd)
+            }
+            if val, ex = exexp[sfd]; ex {
+                bf -= val
+                subln += " - " + fmt.Sprint(val)
+                delete(exexp, sfd)
             }
         }
     }
