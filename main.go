@@ -630,6 +630,54 @@ func main() {
         exexp[strconv.Itoa(e0)] = e1
     }
 
+    // Ask user if there are any payments to exclude (first occurence of day)
+    var e2 int
+    var e3 float64
+    nexexp := make(map[string]float64)
+    neoad := false
+    fmt.Println("\nAny payments to exclude? (Day of payment followed by amount, e.g. '7 600.00')")
+    fmt.Println("Specify one payment per line and an empty line when done")
+    for {
+        e2 = 0
+        e3 = 0.0
+        fmt.Print("> ")
+        _, err = fmt.Scanln(&e2, &e3)
+        if err != nil {
+            switch err.Error() {
+            case "unexpected newline":
+                if e2 == 0 {
+                    neoad = true
+                }
+                if e2 > 0 && e3 == 0.0 {
+                    fmt.Println("Missing amount, try again")
+                    continue
+                }
+            case "expected integer":
+                fmt.Println("First argument is invalid, try again")
+                continue
+            case "expected newline":
+                fmt.Println("Too many arguments but that's ok\nYou'll do better next time")
+            }
+        }
+        if neoad {
+            fmt.Println("")
+            break
+        }
+        if e2 < 1 || e2 > 31 {
+            fmt.Println(fmt.Sprintf("%d is not a valid day", e2))
+            continue
+        }
+        if e3 < 0.0 {
+            fmt.Println("Amount cannot be negative")
+            continue
+        }
+        if _, ok := nexexp[strconv.Itoa(e2)]; ok {
+            nexexp[strconv.Itoa(e2)] -= e3
+            continue
+        }
+        nexexp[strconv.Itoa(e2)] = e3
+    }
+
     // Convert account balance to float
     bf, err := strconv.ParseFloat(b, 64)
     check(err)
