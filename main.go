@@ -633,7 +633,7 @@ func main() {
     // Ask user if there are any payments to exclude (first occurence of day)
     var e2 int
     var e3 float64
-    nexexp := make(map[string]float64)
+    nexp := make(map[string]float64)
     neoad := false
     fmt.Println("\nAny payments to exclude? (Day of payment followed by amount, e.g. '7 600.00')")
     fmt.Println("Specify one payment per line and an empty line when done")
@@ -671,11 +671,13 @@ func main() {
             fmt.Println("Amount cannot be negative")
             continue
         }
-        if _, ok := nexexp[strconv.Itoa(e2)]; ok {
-            nexexp[strconv.Itoa(e2)] -= e3
+        if _, ok := exp[strconv.Itoa(e2)]; ok {
+            nexp[strconv.Itoa(e2)] = e3
+            continue
+        } else {
+            fmt.Println("No expenses on day $d", e2)
             continue
         }
-        nexexp[strconv.Itoa(e2)] = e3
     }
 
     // Convert account balance to float
@@ -758,6 +760,11 @@ func main() {
                 bf -= val
                 subln += " - " + fmt.Sprint(val)
                 delete(exexp, sfd)
+            }
+            if val, ex = nexp[sfd]; ex {
+                bf += val
+                subln += " + " + fmt.Sprint(val)
+                delete(nexp, sfd)
             }
         }
     }
