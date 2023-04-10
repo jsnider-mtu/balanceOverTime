@@ -22,9 +22,9 @@ __The optional flags are:__
 You can see that output doing `bot.exe --help`
 
 - `-d` is only relevant for the getting paid every two weeks workflow
-- `-mdvip` and `-twoWeeks` are booleans that default to `false`. To set them to true it's just `-mdvip=true`
+- `-mdvip` and `-twoWeeks` are booleans that default to `false`
 - `-p` is how much you receive per paycheck
 
 __EXAMPLE:__
 
-`bot.exe -mdvip=true -twoWeeks=true -d 2022-07-10 -p 2500`
+`bot.exe -mdvip -twoWeeks -d 2022-07-10 -p 2500`
