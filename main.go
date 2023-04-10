@@ -280,7 +280,7 @@ func main() {
     for _, k := range sortedexp {
         fmt.Println(fmt.Sprintf("%d\t%.2f", k, exp[strconv.Itoa(k)]))
     }
-    fmt.Println("\nDelay a payment? (Day of payment followed by new day, e.g. '1 10.00')")
+    fmt.Println("\nDelay a payment? (Day of payment followed by new day, e.g. '1 10')")
     fmt.Println("Optionally specify an amount to defer (e.g. '1 10 456.45')")
     fmt.Println("\t0 or blank will use the full payment amount")
     fmt.Println("Specify one day to defer per line and an empty line when done")
