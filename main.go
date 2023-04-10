@@ -28,8 +28,14 @@ func main() {
     payPtr := flag.Float64("p", 2732.23, "How much are you paid?")
     twoWeekPtr := flag.Bool("twoWeeks", false, "Do you get paid every two weeks?")
     mdvipPtr := flag.Bool("mdvip", false, "Do you pay MDVIP every quarter?")
+    versionPtr := flag.Bool("v", false, "Display app version and exit")
 
     flag.Parse()
+
+    if *versionPtr {
+        fmt.Println("Version DEVELOPMENT")
+        os.Exit(0)
+    }
 
     var ref time.Time
     tn := time.Now()
