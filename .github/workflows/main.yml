@@ -19,10 +19,11 @@ jobs:
     - name: Build
       run: make
     - name: Create CHANGELOG.md
+      id: build_changelog
       uses: mikepenz/release-changelog-builder-action@v3.7.1
       with:
         commitMode: true
-        outputFile: ./CHANGELOG.md
+        #outputFile: ./CHANGELOG.md
       env:
         GITHUB_TOKEN: ${{ github.token }}
     - name: Create Release
@@ -33,7 +34,8 @@ jobs:
         prerelease: false
         release_name: ${{ github.ref_name }}
         tag_name: ${{ github.ref }}
-        body_path: ./CHANGELOG.md
+        #body_path: ./CHANGELOG.md
+        body: ${{ steps.build_changelog.outputs.changelog }}
       env:
         GITHUB_TOKEN: ${{ github.token }}
     - name: Upload Linux Binary
