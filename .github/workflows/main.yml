@@ -18,14 +18,18 @@ jobs:
       run: sed -i 's/DEVELOPMENT/${{ github.ref_name }}/' main.go
     - name: Build
       run: make
-    - name: Create CHANGELOG.md
+    - name: Create CHANGELOG
       id: build_changelog
-      uses: mikepenz/release-changelog-builder-action@v3.7.1
+      uses: requarks/changelog-action@v1
       with:
-        commitMode: true
+        token: ${{ github.token }}
+        tag: ${{ github.ref_name }}
+      #uses: mikepenz/release-changelog-builder-action@v3.7.1
+      #with:
+      #  commitMode: true
         #outputFile: ./CHANGELOG.md
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+      #env:
+      #  GITHUB_TOKEN: ${{ github.token }}
     - name: Create Release
       uses: actions/create-release@v1
       id: create_release
@@ -35,7 +39,8 @@ jobs:
         release_name: ${{ github.ref_name }}
         tag_name: ${{ github.ref }}
         #body_path: ./CHANGELOG.md
-        body: ${{ steps.build_changelog.outputs.changelog }}
+        body: ${{ steps.build_changelog.outputs.changes }}
+        #body: ${{ steps.build_changelog.outputs.changelog }}
       env:
         GITHUB_TOKEN: ${{ github.token }}
     - name: Upload Linux Binary
