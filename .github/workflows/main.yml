@@ -24,6 +24,8 @@ jobs:
       with:
         token: ${{ github.token }}
         tag: ${{ github.ref_name }}
+        includeInvalidCommits: true
+        writeToFile: false
       #uses: mikepenz/release-changelog-builder-action@v3.7.1
       #with:
       #  commitMode: true
@@ -51,6 +53,7 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./bot_linux_amd64
         asset_name: bot_linux_amd64
+        asset_content_type: application/octet-stream
     - name: Upload Windows Binary
       uses: actions/upload-release-asset@v1
       env:
@@ -59,3 +62,4 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./bot_windows_amd64.exe
         asset_name: bot_windows_amd64.exe
+        asset_content_type: application/octet-stream
