@@ -4,7 +4,7 @@ run-name: Make Release ${{ github.ref_name }}
 on:
   push:
     tags:
-    - '^[0-9]+.[0-9]+.[0-9]+$'
+    - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   make_release:
