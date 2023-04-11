@@ -1,0 +1,54 @@
+name: Release
+run-name: Make Release ${{ github.ref_name }}
+
+on:
+  push:
+    tags:
+    - '^[0-9]+.[0-9]+.[0-9]+$'
+
+jobs:
+  make_release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v4
+      with:
+        go-version: '^1.19.4'
+    - name: Set version
+      run: sed -i 's/DEVELOPMENT/${{ github.ref_name }}/' main.go
+    - name: Build
+      run: make
+    - name: Create CHANGELOG.md
+      uses: mikepenz/release-changelog-builder-action@v3.7.1
+      with:
+        commitMode: true
+        outputFile: ./CHANGELOG.md
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: Create Release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: false
+        release_name: ${{ github.ref_name }}
+        tag_name: ${{ github.ref }}
+        body_path: ./CHANGELOG.md
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: Upload Linux Binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./bot_linux_amd64
+        asset_name: bot_linux_amd64
+    - name: Upload Windows Binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./bot_windows_amd64.exe
+        asset_name: bot_windows_amd64.exe
