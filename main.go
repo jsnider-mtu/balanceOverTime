@@ -38,11 +38,10 @@ func check(e error) {
 func Paydays(startDate string, twoWeeks bool) [5]time.Time {
     var ref time.Time
     var pdarray [5]time.Time
+    // Verify startDate value is correct format
+    t, err := time.Parse("2006-01-02", startDate)
+    check(err)
     if twoWeeks {
-        // Verify startDate value is correct format
-        t, err := time.Parse("2006-01-02", startDate)
-        check(err)
-    
         // Get reference date
         if diff := tn.Sub(t); diff.Hours() >= 336 {
             mod := int(diff.Hours()) % 336
@@ -53,25 +52,25 @@ func Paydays(startDate string, twoWeeks bool) [5]time.Time {
         }
     } else {
         // Reference date is either last 15th or 30th or 28th or 29th if Feb
-        if tn.Month() == 3 && tn.Day() < 15 {
-            if tn.Year() % 400 == 0 || (tn.Year() % 4 == 0 && tn.Year() % 100 != 0) {
-                ref, err = time.Parse("2006-01-02", strconv.Itoa(tn.Year()) + "-02-29")
+        if int(t.Month()) == 3 && t.Day() < 15 {
+            if t.Year() % 400 == 0 || (t.Year() % 4 == 0 && t.Year() % 100 != 0) {
+                ref, err = time.Parse("2006-01-02", strconv.Itoa(t.Year()) + "-02-29")
                 check(err)
             } else {
-                ref, err = time.Parse("2006-01-02", strconv.Itoa(tn.Year()) + "-02-28")
+                ref, err = time.Parse("2006-01-02", strconv.Itoa(t.Year()) + "-02-28")
                 check(err)
             }
         } else {
-            if tn.Day() < 15 {
-                if int(tn.Month()) > 1 {
-                    ref, err = time.Parse("2006-01-02", fmt.Sprintf("%d-%02d-30", tn.Year(), int(tn.Month()) - 1))
+            if t.Day() < 15 {
+                if int(t.Month()) > 1 {
+                    ref, err = time.Parse("2006-01-02", fmt.Sprintf("%d-%02d-30", t.Year(), int(t.Month()) - 1))
                     check(err)
                 } else {
-                    ref, err = time.Parse("2006-01-02", fmt.Sprintf("%d-%d-30", tn.Year() - 1, 12))
+                    ref, err = time.Parse("2006-01-02", fmt.Sprintf("%d-%d-30", t.Year() - 1, 12))
                     check(err)
                 }
             } else {
-                ref, err = time.Parse("2006-01-02", fmt.Sprintf("%d-%02d-15", tn.Year(), int(tn.Month())))
+                ref, err = time.Parse("2006-01-02", fmt.Sprintf("%d-%02d-15", t.Year(), int(t.Month())))
                 check(err)
             }
         }
@@ -126,7 +125,7 @@ func Paydays(startDate string, twoWeeks bool) [5]time.Time {
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-15", ref.Year() + 1))
                 check(err)
                 pdarray[2] = tim
-                if ref.Year() + 1 % 400 == 0 || (ref.Year() + 1 % 4 == 0 && ref.Year() + 1 % 100 != 0) {
+                if (ref.Year() + 1) % 400 == 0 || ((ref.Year() + 1) % 4 == 0 && (ref.Year() + 1) % 100 != 0) {
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-29", ref.Year() + 1))
                     check(err)
                     pdarray[3] = tim
@@ -210,8 +209,7 @@ func Paydays(startDate string, twoWeeks bool) [5]time.Time {
                 pdarray[4] = tim
             } else {
                 for x := 0; x < 5; x++ {
-                    mon, err := strconv.Atoi(fmt.Sprintf("%.0f", (float64(x) / 2.0) + 3.0))
-                    check(err)
+                    mon := int((float64(x) / 2.0) + 3.0)
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-%02d-%d", ref.Year(), mon, ((x % 2) * 15) + 15))
                     check(err)
                     pdarray[x] = tim
