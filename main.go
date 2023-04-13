@@ -263,7 +263,38 @@ func DelayPayments(d0, d1 int, d2 float64) (map[string]string, map[string]float6
     // dsd0 == 12; dsd1 == 3 expense on 12th of this month moved to 3rd of next month
     // dsd0 == 12; dsd1 == 28 expense on 12th of this month moved to 28th of this month
     // dsd0 == 28; dsd1 == 26 expense on 28th of this month moved to 26th of next month
-    
+
+    // Validate input
+    if _, ok := exp[strconv.Itoa(d0)]; !ok {
+        fmt.Println(fmt.Sprintf("%d is not an expense day", d0))
+        return map[string]string{}, map[string]float64{}
+    }
+    if _, ok := dexp[strconv.Itoa(d0)]; ok {
+        fmt.Println(fmt.Sprintf("Day %d is already being deferred\nCtrl+C (or Cmd+C) to exit and start again", d0))
+        return map[string]string{}, map[string]float64{}
+    }
+    if d0 < 1 || d0 > 31 {
+        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+        return map[string]string{}, map[string]float64{}
+    }
+    if d1 < 1 || d1 > 31 {
+        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+        return map[string]string{}, map[string]float64{}
+    }
+    if d0 == d1 {
+        fmt.Println("Days cannot match")
+        return map[string]string{}, map[string]float64{}
+    }
+    if d2 < 0.0 {
+        fmt.Println("Amount deferred cannot be negative")
+        return map[string]string{}, map[string]float64{}
+    }
+    if d2 > exp[strconv.Itoa(d0)] {
+        fmt.Println("Amount deferred cannot exceed the total payment")
+        fmt.Println(fmt.Sprintf("Max for day %d: %.2f", d0, exp[strconv.Itoa(d0)]))
+        return map[string]string{}, map[string]float64{}
+    }
+
     if d0 > tn.Day() {
         // expense of this month
         if d1 > d0 {
@@ -491,6 +522,14 @@ func DelayPayments(d0, d1 int, d2 float64) (map[string]string, map[string]float6
 }
 
 func AddPayment(e0 int, e1 float64) map[string]float64 {
+    if e0 < 1 || e0 > 31 {
+        fmt.Println(fmt.Sprintf("%d is not a valid day", e0))
+        return map[string]float64{}
+    }
+    if e1 < 0.0 {
+        fmt.Println("Amount cannot be negative")
+        return map[string]float64{}
+    }
     if _, ok := exexp[strconv.Itoa(e0)]; ok {
         exexp[strconv.Itoa(e0)] += e1
     } else {
@@ -500,6 +539,14 @@ func AddPayment(e0 int, e1 float64) map[string]float64 {
 }
 
 func ExcludePayment(e2 int, e3 float64) map[string]float64 {
+    if e2 < 1 || e2 > 31 {
+        fmt.Println(fmt.Sprintf("%d is not a valid day", e2))
+        return map[string]float64{}
+    }
+    if e3 < 0.0 {
+        fmt.Println("Amount cannot be negative")
+        return map[string]float64{}
+    }
     if _, ok := exp[strconv.Itoa(e2)]; ok {
         nexp[strconv.Itoa(e2)] = e3
     } else {
@@ -662,36 +709,6 @@ func main() {
             fmt.Println("")
             break
         }
-        // Validate input
-        if _, ok := exp[strconv.Itoa(d0)]; !ok {
-            fmt.Println(fmt.Sprintf("%d is not an expense day", d0))
-            continue
-        }
-        if _, ok := dexp[strconv.Itoa(d0)]; ok {
-            fmt.Println(fmt.Sprintf("Day %d is already being deferred\nCtrl+C (or Cmd+C) to exit and start again", d0))
-            continue
-        }
-        if d0 < 1 || d0 > 31 {
-            fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-            continue
-        }
-        if d1 < 1 || d1 > 31 {
-            fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-            continue
-        }
-        if d0 == d1 {
-            fmt.Println("Days cannot match")
-            continue
-        }
-        if d2 < 0.0 {
-            fmt.Println("Amount deferred cannot be negative")
-            continue
-        }
-        if d2 > exp[strconv.Itoa(d0)] {
-            fmt.Println("Amount deferred cannot exceed the total payment")
-            fmt.Println(fmt.Sprintf("Max for day %d: %.2f", d0, exp[strconv.Itoa(d0)]))
-            continue
-        }
         _, _ = DelayPayments(d0, d1, d2)
     }
 
@@ -727,14 +744,6 @@ func main() {
             fmt.Println("")
             break
         }
-        if e0 < 1 || e0 > 31 {
-            fmt.Println(fmt.Sprintf("%d is not a valid day", e0))
-            continue
-        }
-        if e1 < 0.0 {
-            fmt.Println("Amount cannot be negative")
-            continue
-        }
         _ = AddPayment(e0, e1)
     }
 
@@ -769,14 +778,6 @@ func main() {
         if neoad {
             fmt.Println("")
             break
-        }
-        if e2 < 1 || e2 > 31 {
-            fmt.Println(fmt.Sprintf("%d is not a valid day", e2))
-            continue
-        }
-        if e3 < 0.0 {
-            fmt.Println("Amount cannot be negative")
-            continue
         }
         _ = ExcludePayment(e2, e3)
     }
