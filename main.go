@@ -107,7 +107,7 @@ func Paydays(startDate string, twoWeeks bool) [5]time.Time {
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-15", ref.Year() + 1))
                 check(err)
                 pdarray[3] = tim
-                if ref.Year() + 1 % 400 == 0 || (ref.Year() + 1 % 4 == 0 && ref.Year() + 1 % 100 != 0) {
+                if (ref.Year() + 1) % 400 == 0 || ((ref.Year() + 1) % 4 == 0 && (ref.Year() + 1) % 100 != 0) {
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-29", ref.Year() + 1))
                     check(err)
                     pdarray[4] = tim
