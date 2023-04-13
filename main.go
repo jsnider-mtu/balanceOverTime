@@ -695,7 +695,9 @@ func main() {
     sfd := strconv.Itoa(ft.Day())
     dd, err := time.ParseDuration("24h")
     sm := bf
+    smperdiem := 9999.0
     var ex bool
+    var perdiem float64
     var pde float64
     var val float64
     var obf float64
@@ -713,10 +715,14 @@ func main() {
                 if bf < sm {
                     sm = bf
                 }
+                perdiem = bf / (ft.Sub(tn).Hours() / 24.0)
+                if perdiem < smperdiem {
+                    smperdiem = perdiem
+                }
                 pde = 0
                 obf = bf
                 bf += *payPtr
-                fmt.Println(fmt.Sprintf("%.2f", obf), "+", *payPtr, "/*", ft.Format("2006-01-02"), "*/")
+                fmt.Println(fmt.Sprintf("%.2f", obf), "+", *payPtr, "/*", ft.Format("2006-01-02"), "*/", fmt.Sprintf("(%.2f per diem)", perdiem))
                 fmt.Println(fmt.Sprintf("%.2f", bf))
                 // if sfd in exp, set pde to exp[sfd]
                 if val, ex = exp[sfd]; ex {
@@ -776,4 +782,6 @@ func main() {
     }
     fmt.Println("")
     fmt.Println("Discretionary funds: $" + fmt.Sprintf("%.2f", sm))
+    fmt.Println("")
+    fmt.Println("Per diem: $" + fmt.Sprintf("%.2f", smperdiem))
 }
