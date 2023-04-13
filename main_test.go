@@ -1,6 +1,7 @@
 package main
 
 import (
+    "os"
     "reflect"
     "testing"
     "time"
@@ -971,7 +972,11 @@ func TestUpdateSubLn(t *testing.T) {
 
 func TestCurrentVersion(t *testing.T) {
     actual := CurrentVersion()
-    if actual != "Version DEVELOPMENT" {
-        t.Errorf("Expected \"Version DEVELOPMENT\", got \"%s\"", actual)
+    ver := os.Getenv("APP_VERSION")
+    if ver == "" {
+        ver = "DEVELOPMENT"
+    }
+    if actual != "Version " + ver {
+        t.Errorf("Expected \"Version %s\", got \"%s\"", ver, actual)
     }
 }

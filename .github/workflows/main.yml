@@ -18,6 +18,8 @@ jobs:
       run: sed -i 's/DEVELOPMENT/${{ github.ref_name }}/' main.go
     - name: Unit tests
       run: go test -v
+      env:
+        APP_VERSION: ${{ github.ref_name }}
     - name: Build
       run: make
     - name: Create CHANGELOG
