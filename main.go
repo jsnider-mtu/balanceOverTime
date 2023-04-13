@@ -547,15 +547,24 @@ func ExcludePayment(e2 int, e3 float64) map[string]float64 {
         fmt.Println("Amount cannot be negative")
         return map[string]float64{}
     }
+    if e3 > exp[strconv.Itoa(e2)] {
+        fmt.Println("Amount cannot exceed the day's expense")
+        return map[string]float64{}
+    }
     if _, ok := exp[strconv.Itoa(e2)]; ok {
         nexp[strconv.Itoa(e2)] = e3
     } else {
         fmt.Println("No expenses on day $d", e2)
+        return map[string]float64{}
     }
     return nexp
 }
 
 func GetPaid(amount float64) float64 {
+    if amount < 0.0 {
+        fmt.Println("Paycheck cannot be negative")
+        return bf
+    }
     bf += amount
     return bf
 }
@@ -573,6 +582,12 @@ func SubMDVIP() map[string]float64 {
 }
 
 func UpdateSubLn(d string, payday bool) string {
+    dint, err := strconv.Atoi(d)
+    check(err)
+    if dint < 1 || dint > 31 {
+        fmt.Println(fmt.Sprintf("%s is not a valid day", d))
+        return ""
+    }
     if payday {
         var pde float64
         // if d in exp, set pde to exp[d]
@@ -632,6 +647,11 @@ func main() {
     versionPtr := flag.Bool("v", false, "Display app version and exit")
 
     flag.Parse()
+
+    if *payPtr < 0.0 {
+        fmt.Println("Paycheck cannot be negative")
+        os.Exit(1)
+    }
 
     if *versionPtr {
         fmt.Println(CurrentVersion())
