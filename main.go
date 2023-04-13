@@ -13,9 +13,21 @@ import (
 
 var (
     err error
+    tn time.Time
     tim time.Time
     pda [5]time.Time
+    dat []byte
+    bf float64
+    mdvipadded bool = false
+    subln string
 )
+
+var exp = make(map[string]float64)
+var dexp = make(map[string]string)
+var ddexp = make(map[string]float64)
+var vdexp = make(map[string]float64)
+var exexp = make(map[string]float64)
+var nexp = make(map[string]float64)
 
 func check(e error) {
     if e != nil {
@@ -23,28 +35,12 @@ func check(e error) {
     }
 }
 
-func main() {
-    datePtr := flag.String("d", "2020-07-10", "Last date paid (YYYY-MM-DD)")
-    payPtr := flag.Float64("p", 2732.23, "How much are you paid?")
-    twoWeekPtr := flag.Bool("twoWeeks", false, "Do you get paid every two weeks?")
-    mdvipPtr := flag.Bool("mdvip", false, "Do you pay MDVIP every quarter?")
-    versionPtr := flag.Bool("v", false, "Display app version and exit")
-
-    flag.Parse()
-
-    if *versionPtr {
-        fmt.Println("Version DEVELOPMENT")
-        os.Exit(0)
-    }
-
+func Paydays(startDate string, twoWeeks bool) [5]time.Time {
     var ref time.Time
-    tn := time.Now()
-    tn, err = time.Parse("2006-01-02", tn.Format("2006-01-02"))
-    check(err)
-
-    if *twoWeekPtr {
-        // Verify datePtr value is correct format
-        t, err := time.Parse("2006-01-02", *datePtr)
+    var pdarray [5]time.Time
+    if twoWeeks {
+        // Verify startDate value is correct format
+        t, err := time.Parse("2006-01-02", startDate)
         check(err)
     
         // Get reference date
@@ -81,7 +77,7 @@ func main() {
         }
     }
 
-    if *twoWeekPtr {
+    if twoWeeks {
         // Create array of next 5 paydays
         pd1, err := time.ParseDuration("336h")
         check(err)
@@ -93,7 +89,7 @@ func main() {
         check(err)
         pd5, err := time.ParseDuration("1680h")
         check(err)
-        pda = [5]time.Time{ref.Add(pd1), ref.Add(pd2), ref.Add(pd3), ref.Add(pd4), ref.Add(pd5)}
+        pdarray = [5]time.Time{ref.Add(pd1), ref.Add(pd2), ref.Add(pd3), ref.Add(pd4), ref.Add(pd5)}
     } else {
         // Create array of next 5 paydays, 15ths and 30ths and 28th or 29th if Feb
         switch int(ref.Month()) {
@@ -101,124 +97,124 @@ func main() {
             if ref.Day() == 15 {
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-12-30", ref.Year()))
                 check(err)
-                pda[0] = tim
+                pdarray[0] = tim
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-01-15", ref.Year() + 1))
                 check(err)
-                pda[1] = tim
+                pdarray[1] = tim
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-01-30", ref.Year() + 1))
                 check(err)
-                pda[2]= tim
+                pdarray[2]= tim
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-15", ref.Year() + 1))
                 check(err)
-                pda[3] = tim
+                pdarray[3] = tim
                 if ref.Year() + 1 % 400 == 0 || (ref.Year() + 1 % 4 == 0 && ref.Year() + 1 % 100 != 0) {
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-29", ref.Year() + 1))
                     check(err)
-                    pda[4] = tim
+                    pdarray[4] = tim
                 } else {
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-28", ref.Year() + 1))
                     check(err)
-                    pda[4] = tim
+                    pdarray[4] = tim
                 }
             } else {
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-01-15", ref.Year() + 1))
                 check(err)
-                pda[0] = tim
+                pdarray[0] = tim
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-01-30", ref.Year() + 1))
                 check(err)
-                pda[1] = tim
+                pdarray[1] = tim
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-15", ref.Year() + 1))
                 check(err)
-                pda[2] = tim
+                pdarray[2] = tim
                 if ref.Year() + 1 % 400 == 0 || (ref.Year() + 1 % 4 == 0 && ref.Year() + 1 % 100 != 0) {
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-29", ref.Year() + 1))
                     check(err)
-                    pda[3] = tim
+                    pdarray[3] = tim
                 } else {
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-28", ref.Year() + 1))
                     check(err)
-                    pda[3] = tim
+                    pdarray[3] = tim
                 }
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-03-15", ref.Year() + 1))
                 check(err)
-                pda[4] = tim
+                pdarray[4] = tim
             }
         case 1:
             if ref.Day() == 15 {
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-01-30", ref.Year()))
                 check(err)
-                pda[0] = tim
+                pdarray[0] = tim
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-15", ref.Year()))
                 check(err)
-                pda[1] = tim
+                pdarray[1] = tim
                 if ref.Year() % 400 == 0 || (ref.Year() % 4 == 0 && ref.Year() % 100 != 0) {
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-29", ref.Year()))
                     check(err)
-                    pda[2] = tim
+                    pdarray[2] = tim
                 } else {
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-28", ref.Year()))
                     check(err)
-                    pda[2] = tim
+                    pdarray[2] = tim
                 }
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-03-15", ref.Year()))
                 check(err)
-                pda[3] = tim
+                pdarray[3] = tim
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-03-30", ref.Year()))
                 check(err)
-                pda[4] = tim
+                pdarray[4] = tim
             } else {
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-15", ref.Year()))
                 check(err)
-                pda[0] = tim
+                pdarray[0] = tim
                 if ref.Year() % 400 == 0 || (ref.Year() % 4 == 0 && ref.Year() % 100 != 0) {
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-29", ref.Year()))
                     check(err)
-                    pda[1] = tim
+                    pdarray[1] = tim
                 } else {
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-28", ref.Year()))
                     check(err)
-                    pda[1] = tim
+                    pdarray[1] = tim
                 }
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-03-15", ref.Year()))
                 check(err)
-                pda[2] = tim
+                pdarray[2] = tim
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-03-30", ref.Year()))
                 check(err)
-                pda[3] = tim
+                pdarray[3] = tim
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-04-15", ref.Year()))
                 check(err)
-                pda[4] = tim
+                pdarray[4] = tim
             }
         case 2:
             if ref.Day() == 15 {
                 if ref.Year() % 400 == 0 || (ref.Year() % 4 == 0 && ref.Year() % 100 != 0) {
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-29", ref.Year()))
                     check(err)
-                    pda[0] = tim
+                    pdarray[0] = tim
                 } else {
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-02-28", ref.Year()))
                     check(err)
-                    pda[0] = tim
+                    pdarray[0] = tim
                 }
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-03-15", ref.Year()))
                 check(err)
-                pda[1] = tim
+                pdarray[1] = tim
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-03-30", ref.Year()))
                 check(err)
-                pda[2] = tim
+                pdarray[2] = tim
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-04-15", ref.Year()))
                 check(err)
-                pda[3] = tim
+                pdarray[3] = tim
                 tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-04-30", ref.Year()))
                 check(err)
-                pda[4] = tim
+                pdarray[4] = tim
             } else {
                 for x := 0; x < 5; x++ {
                     mon, err := strconv.Atoi(fmt.Sprintf("%.0f", (float64(x) / 2.0) + 3.0))
                     check(err)
                     tim, err = time.Parse("2006-01-02", fmt.Sprintf("%d-%02d-%d", ref.Year(), mon, ((x % 2) * 15) + 15))
                     check(err)
-                    pda[x] = tim
+                    pdarray[x] = tim
                 }
             }
         default:
@@ -235,7 +231,7 @@ func main() {
                     if err != nil {
                         fmt.Println(err)
                     }
-                    pda[x] = tim
+                    pdarray[x] = tim
                 }
             } else {
                 for x := 1; x <= 5; x++ {
@@ -249,16 +245,360 @@ func main() {
                     if err != nil {
                         fmt.Println(err)
                     }
-                    pda[x-1] = tim
+                    pdarray[x-1] = tim
                 }
             }
         }
     }
+    return pdarray
+}
+
+func DelayPayments(d0, d1 int, d2 float64) (map[string]string, map[string]float64) {
+    // Ask user if any payment's first occurence should be delayed
+    // ex.
+    // Today == 10
+    // dsd0 == 3; dsd1 == 20 expense on 3rd of next month moved to 20th of next month
+    // dsd0 == 6; dsd1 == 3 expense on 6th of next month moved to 3rd of following month
+    // dsd0 == 6; dsd1 == 7 expense on 6th of next month moved to 7th of next month
+    // dsd0 == 12; dsd1 == 3 expense on 12th of this month moved to 3rd of next month
+    // dsd0 == 12; dsd1 == 28 expense on 12th of this month moved to 28th of this month
+    // dsd0 == 28; dsd1 == 26 expense on 28th of this month moved to 26th of next month
+    
+    if d0 > tn.Day() {
+        // expense of this month
+        if d1 > d0 {
+            // expense moved to this month
+            switch int(tn.Month()) {
+            case 2:
+                if tn.Year() % 400 == 0 || (tn.Year() % 4 == 0 && tn.Year() % 100 != 0) {
+                    if d0 > 29 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                    if d1 > 29 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                } else {
+                    if d0 > 28 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                    if d1 > 28 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                }
+            case 4,6,9,11:
+                if d0 > 30 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                    return map[string]string{}, map[string]float64{}
+                }
+                if d1 > 30 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                    return map[string]string{}, map[string]float64{}
+                }
+            default:
+                if d0 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                    return map[string]string{}, map[string]float64{}
+                }
+                if d1 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                    return map[string]string{}, map[string]float64{}
+                }
+            }
+        } else {
+            // expense moved to next month
+            switch int(tn.Month()) {
+            case 1:
+                if d0 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                    return map[string]string{}, map[string]float64{}
+                }
+                if tn.Year() % 400 == 0 || (tn.Year() % 4 == 0 && tn.Year() % 100 != 0) {
+                    if d1 > 29 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                } else {
+                    if d1 > 28 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                }
+            case 2:
+                if tn.Year() % 400 == 0 || (tn.Year() % 4 == 0 && tn.Year() % 100 != 0) {
+                    if d0 > 29 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                } else {
+                    if d0 > 28 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                }
+                if d1 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                    return map[string]string{}, map[string]float64{}
+                }
+            case 3,5,8,10:
+                if d0 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                    return map[string]string{}, map[string]float64{}
+                }
+                if d1 > 30 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                    return map[string]string{}, map[string]float64{}
+                }
+            case 4,6,9,11:
+                if d0 > 30 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                    return map[string]string{}, map[string]float64{}
+                }
+                if d1 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                    return map[string]string{}, map[string]float64{}
+                }
+            default:
+                if d0 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                    return map[string]string{}, map[string]float64{}
+                }
+                if d1 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                    return map[string]string{}, map[string]float64{}
+                }
+            }
+        }
+    } else {
+        // expense of next month
+        if d1 > d0 {
+            // expense moved to next month
+            switch int(tn.Month()) {
+            case 1:
+                if tn.Year() % 400 == 0 || (tn.Year() % 4 == 0 && tn.Year() % 100 != 0) {
+                    if d0 > 29 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                    if d1 > 29 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                } else {
+                    if d0 > 28 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                    if d1 > 28 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                }
+            case 2,4,6,7,9,11,12:
+                if d0 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                    return map[string]string{}, map[string]float64{}
+                }
+                if d1 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                    return map[string]string{}, map[string]float64{}
+                }
+            default:
+                if d0 > 30 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                    return map[string]string{}, map[string]float64{}
+                }
+                if d1 > 30 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                    return map[string]string{}, map[string]float64{}
+                }
+            }
+        } else {
+            // expense moved to following month
+            switch int(tn.Month()) {
+            case 1:
+                if tn.Year() % 400 == 0 || (tn.Year() % 4 == 0 && tn.Year() % 100 != 0) {
+                    if d0 > 29 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                } else {
+                    if d0 > 28 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                }
+                if d1 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                    return map[string]string{}, map[string]float64{}
+                }
+            case 2,4,7,9:
+                if d0 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                    return map[string]string{}, map[string]float64{}
+                }
+                if d1 > 30 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                    return map[string]string{}, map[string]float64{}
+                }
+            case 3,5,8,10:
+                if d0 > 30 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                    return map[string]string{}, map[string]float64{}
+                }
+                if d1 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                    return map[string]string{}, map[string]float64{}
+                }
+            case 6,11:
+                if d0 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                    return map[string]string{}, map[string]float64{}
+                }
+                if d1 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                    return map[string]string{}, map[string]float64{}
+                }
+            default:
+                if d0 > 31 {
+                    fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
+                    return map[string]string{}, map[string]float64{}
+                }
+                if tn.Year() % 400 == 0 || (tn.Year() % 4 == 0 && tn.Year() % 100 != 0) {
+                    if d1 > 29 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                } else {
+                    if d1 > 28 {
+                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
+                        return map[string]string{}, map[string]float64{}
+                    }
+                }
+            }
+        }
+    }
+    dexp[strconv.Itoa(d0)] = strconv.Itoa(d1)
+    if d2 == 0.0 {
+        vdexp[strconv.Itoa(d0)] = exp[strconv.Itoa(d0)]
+    } else {
+        vdexp[strconv.Itoa(d0)] = d2
+    }
+    return dexp, vdexp
+}
+
+func AddPayment(e0 int, e1 float64) map[string]float64 {
+    if _, ok := exexp[strconv.Itoa(e0)]; ok {
+        exexp[strconv.Itoa(e0)] += e1
+    } else {
+        exexp[strconv.Itoa(e0)] = e1
+    }
+    return exexp
+}
+
+func ExcludePayment(e2 int, e3 float64) map[string]float64 {
+    if _, ok := exp[strconv.Itoa(e2)]; ok {
+        nexp[strconv.Itoa(e2)] = e3
+    } else {
+        fmt.Println("No expenses on day $d", e2)
+    }
+    return nexp
+}
+
+func GetPaid(amount float64) float64 {
+    bf += amount
+    return bf
+}
+
+func AddMDVIP() map[string]float64 {
+    exp["1"] += 450.0
+    mdvipadded = true
+    return exp
+}
+
+func SubMDVIP() map[string]float64 {
+    exp["1"] -= 450.0
+    mdvipadded = false
+    return exp
+}
+
+func UpdateSubLn(d string, payday bool) string {
+    if payday {
+        var pde float64
+        // if d in exp, set pde to exp[d]
+        if val, ex := exp[d]; ex {
+            pde = val
+        }
+        // if pde != 0: start new subln
+        // else: reset subln
+        if pde == 0.0 {
+            subln = ""
+        } else {
+            subln = " - " + fmt.Sprint(pde)
+        }
+    } else {
+        if val, ex := exp[d]; ex {
+            if _, ok := dexp[d]; !ok {
+                bf -= val
+                subln += " - " + fmt.Sprint(val)
+            } else {
+                val2 := vdexp[d]
+                diff := val - val2
+                bf -= diff
+                subln += " - " + fmt.Sprint(diff)
+                ddexp[dexp[d]] += val2
+                delete(vdexp, d)
+                delete(dexp, d)
+            }
+        }
+        if val, ex := ddexp[d]; ex {
+            bf -= val
+            subln += " - " + fmt.Sprint(val)
+            delete(ddexp, d)
+        }
+        if val, ex := exexp[d]; ex {
+            bf -= val
+            subln += " - " + fmt.Sprint(val)
+            delete(exexp, d)
+        }
+        if val, ex := nexp[d]; ex {
+            bf += val
+            subln += " + " + fmt.Sprint(val)
+            delete(nexp, d)
+        }
+    }
+    return subln
+}
+
+func CurrentVersion() string {
+    return "Version DEVELOPMENT"
+}
+
+func main() {
+    datePtr := flag.String("d", "2020-07-10", "Last date paid (YYYY-MM-DD)")
+    payPtr := flag.Float64("p", 2732.23, "How much are you paid?")
+    twoWeekPtr := flag.Bool("twoWeeks", false, "Do you get paid every two weeks?")
+    mdvipPtr := flag.Bool("mdvip", false, "Do you pay MDVIP every quarter?")
+    versionPtr := flag.Bool("v", false, "Display app version and exit")
+
+    flag.Parse()
+
+    if *versionPtr {
+        fmt.Println(CurrentVersion())
+        os.Exit(0)
+    }
+
+    tn = time.Now()
+    tn, err = time.Parse("2006-01-02", tn.Format("2006-01-02"))
+    check(err)
+    pda = Paydays(*datePtr, *twoWeekPtr)
 
     // Read expenses.json and unmarshal data
-    dat, err := ioutil.ReadFile(os.Getenv("HOME") + "/.local/etc/bot/expenses.json")
+    dat, err = ioutil.ReadFile(os.Getenv("HOME") + "/.local/etc/bot/expenses.json")
     check(err)
-    var exp map[string]float64
     json.Unmarshal(dat, &exp)
 
     // Ask user for current account balance
@@ -271,9 +611,6 @@ func main() {
     var d0 int
     var d1 int
     var d2 float64
-    dexp := make(map[string]string)
-    ddexp := make(map[string]float64)
-    vdexp := make(map[string]float64)
     eodd := false
     sortedexp := make([]int, 0, len(exp))
     for k := range exp {
@@ -355,243 +692,12 @@ func main() {
             fmt.Println(fmt.Sprintf("Max for day %d: %.2f", d0, exp[strconv.Itoa(d0)]))
             continue
         }
-        // ex.
-        // Today == 10
-        // dsd0 == 3; dsd1 == 20 expense on 3rd of next month moved to 20th of next month
-        // dsd0 == 6; dsd1 == 3 expense on 6th of next month moved to 3rd of following month
-        // dsd0 == 6; dsd1 == 7 expense on 6th of next month moved to 7th of next month
-        // dsd0 == 12; dsd1 == 3 expense on 12th of this month moved to 3rd of next month
-        // dsd0 == 12; dsd1 == 28 expense on 12th of this month moved to 28th of this month
-        // dsd0 == 28; dsd1 == 26 expense on 28th of this month moved to 26th of next month
-        if d0 > tn.Day() {
-            // expense of this month
-            if d1 > d0 {
-                // expense moved to this month
-                switch int(tn.Month()) {
-                case 2:
-                    if tn.Year() % 400 == 0 || (tn.Year() % 4 == 0 && tn.Year() % 100 != 0) {
-                        if d0 > 29 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                            continue
-                        }
-                        if d1 > 29 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                            continue
-                        }
-                    } else {
-                        if d0 > 28 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                            continue
-                        }
-                        if d1 > 28 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                            continue
-                        }
-                    }
-                case 4,6,9,11:
-                    if d0 > 30 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                        continue
-                    }
-                    if d1 > 30 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                        continue
-                    }
-                default:
-                    if d0 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                        continue
-                    }
-                    if d1 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                        continue
-                    }
-                }
-            } else {
-                // expense moved to next month
-                switch int(tn.Month()) {
-                case 1:
-                    if d0 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                        continue
-                    }
-                    if tn.Year() % 400 == 0 || (tn.Year() % 4 == 0 && tn.Year() % 100 != 0) {
-                        if d1 > 29 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                            continue
-                        }
-                    } else {
-                        if d1 > 28 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                            continue
-                        }
-                    }
-                case 2:
-                    if tn.Year() % 400 == 0 || (tn.Year() % 4 == 0 && tn.Year() % 100 != 0) {
-                        if d0 > 29 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                            continue
-                        }
-                    } else {
-                        if d0 > 28 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                            continue
-                        }
-                    }
-                    if d1 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                        continue
-                    }
-                case 3,5,8,10:
-                    if d0 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                        continue
-                    }
-                    if d1 > 30 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                        continue
-                    }
-                case 4,6,9,11:
-                    if d0 > 30 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                        continue
-                    }
-                    if d1 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                        continue
-                    }
-                default:
-                    if d0 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                        continue
-                    }
-                    if d1 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                        continue
-                    }
-                }
-            }
-        } else {
-            // expense of next month
-            if d1 > d0 {
-                // expense moved to next month
-                switch int(tn.Month()) {
-                case 1:
-                    if tn.Year() % 400 == 0 || (tn.Year() % 4 == 0 && tn.Year() % 100 != 0) {
-                        if d0 > 29 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                            continue
-                        }
-                        if d1 > 29 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                            continue
-                        }
-                    } else {
-                        if d0 > 28 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                            continue
-                        }
-                        if d1 > 28 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                            continue
-                        }
-                    }
-                case 2,4,6,7,9,11,12:
-                    if d0 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                        continue
-                    }
-                    if d1 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                        continue
-                    }
-                default:
-                    if d0 > 30 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                        continue
-                    }
-                    if d1 > 30 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                        continue
-                    }
-                }
-            } else {
-                // expense moved to following month
-                switch int(tn.Month()) {
-                case 1:
-                    if tn.Year() % 400 == 0 || (tn.Year() % 4 == 0 && tn.Year() % 100 != 0) {
-                        if d0 > 29 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                            continue
-                        }
-                    } else {
-                        if d0 > 28 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                            continue
-                        }
-                    }
-                    if d1 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                        continue
-                    }
-                case 2,4,7,9:
-                    if d0 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                        continue
-                    }
-                    if d1 > 30 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                        continue
-                    }
-                case 3,5,8,10:
-                    if d0 > 30 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                        continue
-                    }
-                    if d1 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                        continue
-                    }
-                case 6,11:
-                    if d0 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                        continue
-                    }
-                    if d1 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                        continue
-                    }
-                default:
-                    if d0 > 31 {
-                        fmt.Println(fmt.Sprintf("%d is not a valid day", d0))
-                        continue
-                    }
-                    if tn.Year() % 400 == 0 || (tn.Year() % 4 == 0 && tn.Year() % 100 != 0) {
-                        if d1 > 29 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                            continue
-                        }
-                    } else {
-                        if d1 > 28 {
-                            fmt.Println(fmt.Sprintf("%d is not a valid day", d1))
-                            continue
-                        }
-                    }
-                }
-            }
-        }
-        dexp[strconv.Itoa(d0)] = strconv.Itoa(d1)
-        if d2 == 0.0 {
-            vdexp[strconv.Itoa(d0)] = exp[strconv.Itoa(d0)]
-        } else {
-            vdexp[strconv.Itoa(d0)] = d2
-        }
+        _, _ = DelayPayments(d0, d1, d2)
     }
 
     // Ask user if there are any additional payments (first occurence of day)
     var e0 int
     var e1 float64
-    exexp := make(map[string]float64)
     eoad := false
     fmt.Println("\nAny additional payments? (Day of payment followed by amount, e.g. '7 600.00')")
     fmt.Println("Specify one payment per line and an empty line when done")
@@ -629,17 +735,12 @@ func main() {
             fmt.Println("Amount cannot be negative")
             continue
         }
-        if _, ok := exexp[strconv.Itoa(e0)]; ok {
-            exexp[strconv.Itoa(e0)] += e1
-            continue
-        }
-        exexp[strconv.Itoa(e0)] = e1
+        _ = AddPayment(e0, e1)
     }
 
     // Ask user if there are any payments to exclude (first occurence of day)
     var e2 int
     var e3 float64
-    nexp := make(map[string]float64)
     neoad := false
     fmt.Println("\nAny payments to exclude? (Day of payment followed by amount, e.g. '7 600.00')")
     fmt.Println("Specify one payment per line and an empty line when done")
@@ -677,32 +778,22 @@ func main() {
             fmt.Println("Amount cannot be negative")
             continue
         }
-        if _, ok := exp[strconv.Itoa(e2)]; ok {
-            nexp[strconv.Itoa(e2)] = e3
-            continue
-        } else {
-            fmt.Println("No expenses on day $d", e2)
-            continue
-        }
+        _ = ExcludePayment(e2, e3)
     }
 
     // Convert account balance to float
-    bf, err := strconv.ParseFloat(b, 64)
+    bf, err = strconv.ParseFloat(b, 64)
     check(err)
 
     // Main loop:
     ft := tn
     sfd := strconv.Itoa(ft.Day())
     dd, err := time.ParseDuration("24h")
+    check(err)
     sm := bf
     smperdiem := 9999.0
-    var ex bool
     var perdiem float64
-    var pde float64
-    var val float64
     var obf float64
-    var subln string
-    var mdvipadded bool = false
     for _, payday := range pda {
         obf = bf
         for ft.Before(payday) {
@@ -719,65 +810,23 @@ func main() {
                 if perdiem < smperdiem {
                     smperdiem = perdiem
                 }
-                pde = 0
                 obf = bf
-                bf += *payPtr
+                _ = GetPaid(*payPtr)
                 fmt.Println(fmt.Sprintf("%.2f", obf), "+", *payPtr, "/*", ft.Format("2006-01-02"), "*/", fmt.Sprintf("(%.2f per diem)", perdiem))
                 fmt.Println(fmt.Sprintf("%.2f", bf))
-                // if sfd in exp, set pde to exp[sfd]
-                if val, ex = exp[sfd]; ex {
-                    pde = val
-                }
-                // if pde != 0: start new subln
-                // else: reset subln
-                if pde == 0 {
-                    subln = ""
-                } else {
-                    subln = " - " + fmt.Sprint(pde)
-                }
+                _ = UpdateSubLn(sfd, true)
                 break
             }
             // Check if sfd exists in exp
             // if yes, subtract exp[sfd] from bf and add to subln
             if *mdvipPtr {
                 if int(ft.Month()) % 3 == 0 && ft.Day() == 1 && !mdvipadded {
-                    exp["1"] += 450.0
-                    mdvipadded = true
-                //} else if int(ft.Month()) % 3 == 0 && ft.Day() == 2 && mdvipadded {
+                    _ = AddMDVIP()
                 } else if mdvipadded {
-                    exp["1"] -= 450.0
-                    mdvipadded = false
+                    _ = SubMDVIP()
                 }
             }
-            if val, ex = exp[sfd]; ex {
-                if _, ok := dexp[sfd]; !ok {
-                    bf -= val
-                    subln += " - " + fmt.Sprint(val)
-                } else {
-                    val2 := vdexp[sfd]
-                    diff := val - val2
-                    bf -= diff
-                    subln += " - " + fmt.Sprint(diff)
-                    ddexp[dexp[sfd]] += val2
-                    delete(vdexp, sfd)
-                    delete(dexp, sfd)
-                }
-            }
-            if val, ex = ddexp[sfd]; ex {
-                bf -= val
-                subln += " - " + fmt.Sprint(val)
-                delete(ddexp, sfd)
-            }
-            if val, ex = exexp[sfd]; ex {
-                bf -= val
-                subln += " - " + fmt.Sprint(val)
-                delete(exexp, sfd)
-            }
-            if val, ex = nexp[sfd]; ex {
-                bf += val
-                subln += " + " + fmt.Sprint(val)
-                delete(nexp, sfd)
-            }
+            _ = UpdateSubLn(sfd, false)
         }
     }
     fmt.Println("")
