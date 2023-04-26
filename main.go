@@ -587,48 +587,35 @@ func UpdateSubLn(d string, payday bool) string {
         return ""
     }
     if payday {
-        var pde float64
-        // if d in exp, set pde to exp[d]
-        if val, ex := exp[d]; ex {
-            pde = val
-        }
-        // if pde != 0: start new subln
-        // else: reset subln
-        if pde == 0.0 {
-            subln = ""
+        subln = ""
+    }
+    if val, ex := exp[d]; ex {
+        if _, ok := dexp[d]; !ok {
+            bf -= val
+            subln += " - " + fmt.Sprint(val)
         } else {
-            subln = " - " + fmt.Sprint(pde)
+            diff := val - vdexp[d]
+            bf -= diff
+            subln += " - " + fmt.Sprint(diff)
+            ddexp[dexp[d]] += vdexp[d]
+            delete(vdexp, d)
+            delete(dexp, d)
         }
-    } else {
-        if val, ex := exp[d]; ex {
-            if _, ok := dexp[d]; !ok {
-                bf -= val
-                subln += " - " + fmt.Sprint(val)
-            } else {
-                val2 := vdexp[d]
-                diff := val - val2
-                bf -= diff
-                subln += " - " + fmt.Sprint(diff)
-                ddexp[dexp[d]] += val2
-                delete(vdexp, d)
-                delete(dexp, d)
-            }
-        }
-        if val, ex := ddexp[d]; ex {
-            bf -= val
-            subln += " - " + fmt.Sprint(val)
-            delete(ddexp, d)
-        }
-        if val, ex := exexp[d]; ex {
-            bf -= val
-            subln += " - " + fmt.Sprint(val)
-            delete(exexp, d)
-        }
-        if val, ex := nexp[d]; ex {
-            bf += val
-            subln += " + " + fmt.Sprint(val)
-            delete(nexp, d)
-        }
+    }
+    if val, ex := ddexp[d]; ex {
+        bf -= val
+        subln += " - " + fmt.Sprint(val)
+        delete(ddexp, d)
+    }
+    if val, ex := exexp[d]; ex {
+        bf -= val
+        subln += " - " + fmt.Sprint(val)
+        delete(exexp, d)
+    }
+    if val, ex := nexp[d]; ex {
+        bf += val
+        subln += " + " + fmt.Sprint(val)
+        delete(nexp, d)
     }
     return subln
 }
@@ -660,6 +647,7 @@ func main() {
     tn, err = time.Parse("2006-01-02", tn.Format("2006-01-02"))
     check(err)
     pda = Paydays(*datePtr, *twoWeekPtr)
+    //fmt.Println(fmt.Sprint(pda))
 
     // Read expenses.json and unmarshal data
     dat, err = ioutil.ReadFile(os.Getenv("HOME") + "/.local/etc/bot/expenses.json")
