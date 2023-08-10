@@ -18,7 +18,7 @@ repos:
     hooks:
     -   id: beautysh
 -   repo: https://github.com/doublify/pre-commit-go
-    sha: master
+    rev: master
     hooks:
     -   id: fmt
     -   id: vet
