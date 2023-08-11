@@ -1,11 +1,11 @@
 package main
 
 import (
+	"github.com/jsnider-mtu/balanceovertime"
 	"os"
 	"reflect"
 	"testing"
 	"time"
-	"github.com/jsnider-mtu/balanceovertime"
 )
 
 //func init() {
