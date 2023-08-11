@@ -18,9 +18,9 @@ repos:
     rev: v6.2.1
     hooks:
     -   id: beautysh
--   repo: https://github.com/doublify/pre-commit-go
-    rev: 208a4aaa7f86b44e961eaaea526743b920e187a0
+-   repo: https://github.com/jsnider-mtu/pre-commit-golang
+    rev: v0.0.1
     hooks:
     -   id: fmt
-    # -   id: vet
+    -   id: vet
     -   id: fix
