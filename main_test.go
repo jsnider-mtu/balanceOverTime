@@ -586,122 +586,122 @@ func TestPaydays(t *testing.T) {
 	check(err)
 
 	paydaysTestCases := []PaydaysTestCase{
-		PaydaysTestCase{
+		{
 			startDate:        "2023-01-02",
 			defaultExpected:  [5]time.Time{tc0_0_default, tc0_1_default, tc0_2_default, tc0_3_default, tc0_4_default},
 			twoWeeksExpected: [5]time.Time{tc0_0_tw, tc0_1_tw, tc0_2_tw, tc0_3_tw, tc0_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-01-17",
 			defaultExpected:  [5]time.Time{tc1_0_default, tc1_1_default, tc1_2_default, tc1_3_default, tc1_4_default},
 			twoWeeksExpected: [5]time.Time{tc1_0_tw, tc1_1_tw, tc1_2_tw, tc1_3_tw, tc1_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-02-02",
 			defaultExpected:  [5]time.Time{tc2_0_default, tc2_1_default, tc2_2_default, tc2_3_default, tc2_4_default},
 			twoWeeksExpected: [5]time.Time{tc2_0_tw, tc2_1_tw, tc2_2_tw, tc2_3_tw, tc2_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-02-17",
 			defaultExpected:  [5]time.Time{tc3_0_default, tc3_1_default, tc3_2_default, tc3_3_default, tc3_4_default},
 			twoWeeksExpected: [5]time.Time{tc3_0_tw, tc3_1_tw, tc3_2_tw, tc3_3_tw, tc3_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-03-02",
 			defaultExpected:  [5]time.Time{tc4_0_default, tc4_1_default, tc4_2_default, tc4_3_default, tc4_4_default},
 			twoWeeksExpected: [5]time.Time{tc4_0_tw, tc4_1_tw, tc4_2_tw, tc4_3_tw, tc4_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-03-17",
 			defaultExpected:  [5]time.Time{tc5_0_default, tc5_1_default, tc5_2_default, tc5_3_default, tc5_4_default},
 			twoWeeksExpected: [5]time.Time{tc5_0_tw, tc5_1_tw, tc5_2_tw, tc5_3_tw, tc5_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-04-02",
 			defaultExpected:  [5]time.Time{tc6_0_default, tc6_1_default, tc6_2_default, tc6_3_default, tc6_4_default},
 			twoWeeksExpected: [5]time.Time{tc6_0_tw, tc6_1_tw, tc6_2_tw, tc6_3_tw, tc6_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-04-17",
 			defaultExpected:  [5]time.Time{tc7_0_default, tc7_1_default, tc7_2_default, tc7_3_default, tc7_4_default},
 			twoWeeksExpected: [5]time.Time{tc7_0_tw, tc7_1_tw, tc7_2_tw, tc7_3_tw, tc7_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-05-02",
 			defaultExpected:  [5]time.Time{tc8_0_default, tc8_1_default, tc8_2_default, tc8_3_default, tc8_4_default},
 			twoWeeksExpected: [5]time.Time{tc8_0_tw, tc8_1_tw, tc8_2_tw, tc8_3_tw, tc8_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-05-17",
 			defaultExpected:  [5]time.Time{tc9_0_default, tc9_1_default, tc9_2_default, tc9_3_default, tc9_4_default},
 			twoWeeksExpected: [5]time.Time{tc9_0_tw, tc9_1_tw, tc9_2_tw, tc9_3_tw, tc9_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-06-02",
 			defaultExpected:  [5]time.Time{tc10_0_default, tc10_1_default, tc10_2_default, tc10_3_default, tc10_4_default},
 			twoWeeksExpected: [5]time.Time{tc10_0_tw, tc10_1_tw, tc10_2_tw, tc10_3_tw, tc10_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-06-17",
 			defaultExpected:  [5]time.Time{tc11_0_default, tc11_1_default, tc11_2_default, tc11_3_default, tc11_4_default},
 			twoWeeksExpected: [5]time.Time{tc11_0_tw, tc11_1_tw, tc11_2_tw, tc11_3_tw, tc11_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-07-02",
 			defaultExpected:  [5]time.Time{tc12_0_default, tc12_1_default, tc12_2_default, tc12_3_default, tc12_4_default},
 			twoWeeksExpected: [5]time.Time{tc12_0_tw, tc12_1_tw, tc12_2_tw, tc12_3_tw, tc12_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-07-17",
 			defaultExpected:  [5]time.Time{tc13_0_default, tc13_1_default, tc13_2_default, tc13_3_default, tc13_4_default},
 			twoWeeksExpected: [5]time.Time{tc13_0_tw, tc13_1_tw, tc13_2_tw, tc13_3_tw, tc13_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-08-02",
 			defaultExpected:  [5]time.Time{tc14_0_default, tc14_1_default, tc14_2_default, tc14_3_default, tc14_4_default},
 			twoWeeksExpected: [5]time.Time{tc14_0_tw, tc14_1_tw, tc14_2_tw, tc14_3_tw, tc14_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-08-17",
 			defaultExpected:  [5]time.Time{tc15_0_default, tc15_1_default, tc15_2_default, tc15_3_default, tc15_4_default},
 			twoWeeksExpected: [5]time.Time{tc15_0_tw, tc15_1_tw, tc15_2_tw, tc15_3_tw, tc15_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-09-02",
 			defaultExpected:  [5]time.Time{tc16_0_default, tc16_1_default, tc16_2_default, tc16_3_default, tc16_4_default},
 			twoWeeksExpected: [5]time.Time{tc16_0_tw, tc16_1_tw, tc16_2_tw, tc16_3_tw, tc16_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-09-17",
 			defaultExpected:  [5]time.Time{tc17_0_default, tc17_1_default, tc17_2_default, tc17_3_default, tc17_4_default},
 			twoWeeksExpected: [5]time.Time{tc17_0_tw, tc17_1_tw, tc17_2_tw, tc17_3_tw, tc17_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-10-02",
 			defaultExpected:  [5]time.Time{tc18_0_default, tc18_1_default, tc18_2_default, tc18_3_default, tc18_4_default},
 			twoWeeksExpected: [5]time.Time{tc18_0_tw, tc18_1_tw, tc18_2_tw, tc18_3_tw, tc18_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-10-17",
 			defaultExpected:  [5]time.Time{tc19_0_default, tc19_1_default, tc19_2_default, tc19_3_default, tc19_4_default},
 			twoWeeksExpected: [5]time.Time{tc19_0_tw, tc19_1_tw, tc19_2_tw, tc19_3_tw, tc19_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-11-02",
 			defaultExpected:  [5]time.Time{tc20_0_default, tc20_1_default, tc20_2_default, tc20_3_default, tc20_4_default},
 			twoWeeksExpected: [5]time.Time{tc20_0_tw, tc20_1_tw, tc20_2_tw, tc20_3_tw, tc20_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-11-17",
 			defaultExpected:  [5]time.Time{tc21_0_default, tc21_1_default, tc21_2_default, tc21_3_default, tc21_4_default},
 			twoWeeksExpected: [5]time.Time{tc21_0_tw, tc21_1_tw, tc21_2_tw, tc21_3_tw, tc21_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-12-02",
 			defaultExpected:  [5]time.Time{tc22_0_default, tc22_1_default, tc22_2_default, tc22_3_default, tc22_4_default},
 			twoWeeksExpected: [5]time.Time{tc22_0_tw, tc22_1_tw, tc22_2_tw, tc22_3_tw, tc22_4_tw},
 		},
-		PaydaysTestCase{
+		{
 			startDate:        "2023-12-17",
 			defaultExpected:  [5]time.Time{tc23_0_default, tc23_1_default, tc23_2_default, tc23_3_default, tc23_4_default},
 			twoWeeksExpected: [5]time.Time{tc23_0_tw, tc23_1_tw, tc23_2_tw, tc23_3_tw, tc23_4_tw},
@@ -725,56 +725,56 @@ func TestPaydays(t *testing.T) {
 
 func TestDelayPayments(t *testing.T) {
 	delayPaymentsTestCases := []DelayPaymentsTestCase{
-		DelayPaymentsTestCase{
+		{
 			d0:            1,
 			d1:            15,
 			d2:            1300.00,
 			strExpected:   map[string]string{"1": "15"},
 			floatExpected: map[string]float64{"1": 1300.00},
 		},
-		DelayPaymentsTestCase{
+		{
 			d0:            2,
 			d1:            15,
 			d2:            0.0,
 			strExpected:   map[string]string{"2": "15"},
 			floatExpected: map[string]float64{"2": 171.91},
 		},
-		DelayPaymentsTestCase{
+		{
 			d0:            3,
 			d1:            15,
 			d2:            500.00,
 			strExpected:   map[string]string{},
 			floatExpected: map[string]float64{},
 		},
-		DelayPaymentsTestCase{
+		{
 			d0:            0,
 			d1:            15,
 			d2:            500.00,
 			strExpected:   map[string]string{},
 			floatExpected: map[string]float64{},
 		},
-		DelayPaymentsTestCase{
+		{
 			d0:            7,
 			d1:            32,
 			d2:            500.00,
 			strExpected:   map[string]string{},
 			floatExpected: map[string]float64{},
 		},
-		DelayPaymentsTestCase{
+		{
 			d0:            15,
 			d1:            15,
 			d2:            500.00,
 			strExpected:   map[string]string{},
 			floatExpected: map[string]float64{},
 		},
-		DelayPaymentsTestCase{
+		{
 			d0:            1,
 			d1:            15,
 			d2:            -500.00,
 			strExpected:   map[string]string{},
 			floatExpected: map[string]float64{},
 		},
-		DelayPaymentsTestCase{
+		{
 			d0:            1,
 			d1:            15,
 			d2:            1700.00,
@@ -798,22 +798,22 @@ func TestDelayPayments(t *testing.T) {
 
 func TestAddPayment(t *testing.T) {
 	addPaymentTestCases := []AddPaymentTestCase{
-		AddPaymentTestCase{
+		{
 			e0:       3,
 			e1:       550.00,
 			expected: map[string]float64{"3": 550.00},
 		},
-		AddPaymentTestCase{
+		{
 			e0:       0,
 			e1:       550.00,
 			expected: map[string]float64{},
 		},
-		AddPaymentTestCase{
+		{
 			e0:       32,
 			e1:       550.00,
 			expected: map[string]float64{},
 		},
-		AddPaymentTestCase{
+		{
 			e0:       3,
 			e1:       -550.00,
 			expected: map[string]float64{},
@@ -830,32 +830,32 @@ func TestAddPayment(t *testing.T) {
 
 func TestExcludePayment(t *testing.T) {
 	excludePaymentTestCases := []ExcludePaymentTestCase{
-		ExcludePaymentTestCase{
+		{
 			e0:       1,
 			e1:       550.00,
 			expected: map[string]float64{"1": 550.00},
 		},
-		ExcludePaymentTestCase{
+		{
 			e0:       0,
 			e1:       550.00,
 			expected: map[string]float64{},
 		},
-		ExcludePaymentTestCase{
+		{
 			e0:       32,
 			e1:       550.00,
 			expected: map[string]float64{},
 		},
-		ExcludePaymentTestCase{
+		{
 			e0:       1,
 			e1:       -550.00,
 			expected: map[string]float64{},
 		},
-		ExcludePaymentTestCase{
+		{
 			e0:       3,
 			e1:       550.00,
 			expected: map[string]float64{},
 		},
-		ExcludePaymentTestCase{
+		{
 			e0:       2,
 			e1:       550.00,
 			expected: map[string]float64{},
@@ -872,11 +872,11 @@ func TestExcludePayment(t *testing.T) {
 
 func TestGetPaid(t *testing.T) {
 	getPaidTestCases := []GetPaidTestCase{
-		GetPaidTestCase{
+		{
 			amount:   1500.00,
 			expected: 2500.00,
 		},
-		GetPaidTestCase{
+		{
 			amount:   -1500.00,
 			expected: 1000.00,
 		},
@@ -910,42 +910,42 @@ func TestSubMDVIP(t *testing.T) {
 
 func TestUpdateSubLn(t *testing.T) {
 	updateSubLnTestCases := []UpdateSubLnTestCase{
-		UpdateSubLnTestCase{
+		{
 			d:        "3",
 			payday:   true,
 			expected: "",
 		},
-		UpdateSubLnTestCase{
+		{
 			d:        "12",
 			payday:   true,
 			expected: " - 500",
 		},
-		UpdateSubLnTestCase{
+		{
 			d:        "3",
 			payday:   false,
 			expected: "",
 		},
-		UpdateSubLnTestCase{
+		{
 			d:        "4",
 			payday:   false,
 			expected: " - 90.36",
 		},
-		UpdateSubLnTestCase{
+		{
 			d:        "6",
 			payday:   false,
 			expected: " - 190.36",
 		},
-		UpdateSubLnTestCase{
+		{
 			d:        "18",
 			payday:   false,
 			expected: " - 25 + 20",
 		},
-		UpdateSubLnTestCase{
+		{
 			d:        "0",
 			payday:   false,
 			expected: "",
 		},
-		UpdateSubLnTestCase{
+		{
 			d:        "32",
 			payday:   false,
 			expected: "",
