@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 	"time"
+	"github.com/jsnider-mtu/balanceovertime"
 )
 
 //func init() {
@@ -711,12 +712,12 @@ func TestPaydays(t *testing.T) {
 	for cind, c := range paydaysTestCases {
 		tn, err := time.Parse("2006-01-02", c.startDate)
 		check(err)
-		default_actual := Paydays(c.startDate, false)
+		default_actual := balanceovertime.Paydays(c.startDate, false)
 		if default_actual != c.defaultExpected {
 			t.Errorf("[Test #%d] Expected %v, got %v", cind, c.defaultExpected, default_actual)
 		}
 
-		tw_actual := Paydays(c.startDate, true)
+		tw_actual := balanceovertime.Paydays(c.startDate, true)
 		if tw_actual != c.twoWeeksExpected {
 			t.Errorf("[Test #%d] Expected %v, got %v", cind, c.twoWeeksExpected, tw_actual)
 		}
