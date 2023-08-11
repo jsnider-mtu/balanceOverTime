@@ -19,7 +19,7 @@ repos:
     hooks:
     -   id: beautysh
 -   repo: https://github.com/jsnider-mtu/pre-commit-golang
-    rev: master
+    rev: main
     hooks:
     -   id: fmt
     -   id: vet
