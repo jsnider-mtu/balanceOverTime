@@ -709,7 +709,7 @@ func TestPaydays(t *testing.T) {
 	}
 
 	for cind, c := range paydaysTestCases {
-		tn, err := time.Parse("2006-01-02", c.startDate)
+		_, err := time.Parse("2006-01-02", c.startDate)
 		check(err)
 		default_actual := Paydays(c.startDate, false)
 		if default_actual != c.defaultExpected {
