@@ -7,16 +7,16 @@ import (
 	"time"
 )
 
-func init() {
-	//    exp := map[string]float64{"1": 1600.00, "2": 171.91, "5": 32.98, "12": 500.00, "18": 25.00, "25": 251.65, "29": 490.60}
-	bf = 1000.00
-}
-
-//func check(e error) {
-//    if e != nil {
-//        panic(e)
-//    }
+//func init() {
+//	//    exp := map[string]float64{"1": 1600.00, "2": 171.91, "5": 32.98, "12": 500.00, "18": 25.00, "25": 251.65, "29": 490.60}
+//	bf = 1000.00
 //}
+
+func check(e error) {
+    if e != nil {
+        panic(e)
+    }
+}
 
 type PaydaysTestCase struct {
 	startDate        string
