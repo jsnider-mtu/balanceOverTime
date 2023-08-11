@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	exp = map[string]float64{"1": 1600.00, "2": 171.91, "5": 32.98, "12": 500.00, "18": 25.00, "25": 251.65, "29": 490.60}
+	//    exp := map[string]float64{"1": 1600.00, "2": 171.91, "5": 32.98, "12": 500.00, "18": 25.00, "25": 251.65, "29": 490.60}
 	bf = 1000.00
 }
 
@@ -900,7 +900,7 @@ func TestAddMDVIP(t *testing.T) {
 }
 
 func TestSubMDVIP(t *testing.T) {
-	exp = map[string]float64{"1": 2050.00, "2": 171.91, "5": 32.98, "12": 500.00, "18": 25.00, "25": 251.65, "29": 490.60}
+	//    exp = map[string]float64{"1": 2050.00, "2": 171.91, "5": 32.98, "12": 500.00, "18": 25.00, "25": 251.65, "29": 490.60}
 	expected := map[string]float64{"1": 1600.00, "2": 171.91, "5": 32.98, "12": 500.00, "18": 25.00, "25": 251.65, "29": 490.60}
 	actual := SubMDVIP()
 	if !reflect.DeepEqual(actual, expected) {
@@ -953,7 +953,7 @@ func TestUpdateSubLn(t *testing.T) {
 	}
 
 	for cind, c := range updateSubLnTestCases {
-		exp = map[string]float64{"1": 1600.00, "2": 171.91, "5": 32.98, "12": 500.00, "18": 25.00, "25": 251.65, "29": 490.60}
+		//        exp = map[string]float64{"1": 1600.00, "2": 171.91, "5": 32.98, "12": 500.00, "18": 25.00, "25": 251.65, "29": 490.60}
 		dexp = map[string]string{"2": "4"}
 		vdexp = map[string]float64{"2": 90.36}
 		ddexp = map[string]float64{"4": 90.36}
