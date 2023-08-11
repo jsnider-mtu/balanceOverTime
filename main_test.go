@@ -13,9 +13,9 @@ import (
 //}
 
 func check(e error) {
-    if e != nil {
-        panic(e)
-    }
+	if e != nil {
+		panic(e)
+	}
 }
 
 type PaydaysTestCase struct {
