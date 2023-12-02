@@ -18,7 +18,8 @@ var (
 	pda        [5]time.Time
 	dat        []byte
 	bf         float64
-	mdvipadded bool = false
+	mdvipadded bool    = false
+	mdvipprice float64 = 512.5
 	subln      string
 )
 
@@ -568,13 +569,13 @@ func GetPaid(amount float64) float64 {
 }
 
 func AddMDVIP() map[string]float64 {
-	exp["1"] += 450.0
+	exp["1"] += mdvipprice
 	mdvipadded = true
 	return exp
 }
 
 func SubMDVIP() map[string]float64 {
-	exp["1"] -= 450.0
+	exp["1"] -= mdvipprice
 	mdvipadded = false
 	return exp
 }
