@@ -18,7 +18,7 @@ var (
 	pda        [5]time.Time
 	dat        []byte
 	bf         float64
-	mdvipadded bool = false
+	mdvipadded bool    = false
 	mdvipprice float64 = 512.5
 	subln      string
 )
