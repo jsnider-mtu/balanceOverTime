@@ -1,0 +1,8 @@
+ 1: Mortgage $1638.17; DigitalOcean $56.35
+ 2: USAA $215.24; Citi $72.69
+12: Discover $519
+14: Student Loan $319.81
+15: Viz Media $2.99
+20: USCCA $39.17; Chase $700
+25: Myrtle Beach $251.65
+29: AmEx $300; ATT $95.60; Ting $44.23; Prime Video $11.99 $9.99
