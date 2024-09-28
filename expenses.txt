@@ -1,5 +1,6 @@
  1: Mortgage $1638.17; DigitalOcean $56.35
  2: USAA $215.24; Citi $72.69
+ 8: Spotify $16.99
 12: Discover $519
 14: Student Loan $319.81
 15: Viz Media $2.99
